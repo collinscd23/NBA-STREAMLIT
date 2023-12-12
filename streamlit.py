@@ -45,8 +45,15 @@ def compare_players(player1_data, player2_data, stats):
 def plot_stat_trends(data, player_name, stats):
     player_data = data[data['PLAYER'] == player_name]
     player_data = player_data[player_data['Season_type'].str.contains('Playoffs')]
+
+    # Ensure only years with data are included
+    years_played = player_data['Year'].unique()
+
     for stat in stats:
-        fig = px.line(player_data, x='Year', y=stat, title=f'{player_name} - {stat} Over Playoff Years')
+        # Filter data to include only years played
+        filtered_data = player_data[player_data['Year'].isin(years_played)]
+
+        fig = px.line(filtered_data, x='Year', y=stat, title=f'{player_name} - {stat} Over Playoff Years')
         fig.update_layout(xaxis_title='Year', yaxis_title=stat)
         st.plotly_chart(fig)
 
