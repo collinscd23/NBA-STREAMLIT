@@ -27,7 +27,7 @@ def plot_top_stats(data, player_name):
     plt.ylabel('Stat Value')
     st.pyplot(plt)
 
-# Function to compare two players
+
 # Function to compare two players
 def compare_players(player1_data, player2_data, stats):
     player1_stats = player1_data[stats].mean()  # Using mean in case of multiple entries
@@ -47,6 +47,16 @@ def compare_players(player1_data, player2_data, stats):
         plt.legend()
 
         st.pyplot(plt)
+
+# Function to plot yearly trend for a given stat
+def plot_yearly_trend(data, stat, season_type):
+    yearly_data = data[data['Season_type'] == season_type].groupby('Year')[stat].mean()
+    plt.figure(figsize=(10, 6))
+    plt.plot(yearly_data, marker='o')
+    plt.title(f'Yearly Trend in {stat} During {season_type}')
+    plt.xlabel('Year')
+    plt.ylabel(stat)
+    st.pyplot(plt)
 
 # Load the data
 nba_data = load_data()
@@ -90,3 +100,8 @@ if player1_name and player2_name:
             st.write(f'Player {player1_name} not found.')
         if player2_data.empty:
             st.write(f'Player {player2_name} not found.')
+            
+# Yearly trend analysis for playoffs
+st.header("Playoffs Yearly Trend Analysis")
+selected_stat = st.selectbox('Select a stat to display trend', ['FG3M', 'POSS_est'], index=0)
+plot_yearly_trend(nba_data, selected_stat, 'Playoffs')
