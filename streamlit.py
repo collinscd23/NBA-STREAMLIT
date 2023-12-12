@@ -113,11 +113,10 @@ if selected_player:
     plot_stat_trends(nba_data, selected_player, stats_to_plot)
 
 
-st.write("### NBA Player Data", nba_data)
 
 # Sample plot: Points per season
 st.write("### Points per Season")
-selected_season = st.selectbox('Select a Season', nba_data['Year'].unique())
-filtered_data = nba_data[nba_data['Year'] == selected_season]
+selected_season = st.selectbox('Select a Season', data['Year'].unique())
+filtered_data = data[data['Year'] == selected_season]
 fig = px.bar(filtered_data, x='PLAYER', y='PTS', title=f'Points in Season {selected_season}')
 st.plotly_chart(fig)
