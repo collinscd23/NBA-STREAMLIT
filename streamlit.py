@@ -103,5 +103,5 @@ if player1_name and player2_name:
             
 # Yearly trend analysis for playoffs
 st.header("Playoffs Yearly Trend Analysis")
-selected_stat = st.selectbox('Select a stat to display trend', ['FG3M', 'POSS_est'], index=0)
+selected_stat = st.selectbox('Select a stat to display trend', ['FG3M', 'FG3A'], index=0)
 plot_yearly_trend(nba_data, selected_stat, 'Playoffs')
