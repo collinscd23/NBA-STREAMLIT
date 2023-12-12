@@ -113,7 +113,7 @@ if selected_player:
     plot_stat_trends(nba_data, selected_player, stats_to_plot)
 
 
-st.write("### NBA Player Data", df)
+st.write("### NBA Player Data", nba_data)
 
 # Sample plot: Points per season
 st.write("### Points per Season")
