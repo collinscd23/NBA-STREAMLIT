@@ -48,15 +48,18 @@ def compare_players(player1_data, player2_data, stats):
 
         st.pyplot(plt)
 
-# Function to plot yearly trend for a given stat
-def plot_yearly_trend(data, stat, season_type):
-    yearly_data = data[data['Season_type'] == season_type].groupby('Year')[stat].mean()
-    plt.figure(figsize=(10, 6))
-    plt.plot(yearly_data, marker='o')
-    plt.title(f'Yearly Trend in {stat} During {season_type}')
-    plt.xlabel('Year')
-    plt.ylabel(stat)
-    st.pyplot(plt)
+# Function to plot stat trends over the years
+def plot_stat_trends(data, player_name, stats):
+    player_data = data[data['PLAYER'] == player_name]
+    player_data = player_data[player_data['Season_type'].str.contains('Playoffs')]
+
+    for stat in stats:
+        plt.figure(figsize=(12, 6))
+        plt.plot(player_data['Year'], player_data[stat], marker='o')
+        plt.title(f'{player_name} - {stat} Over Playoff Years')
+        plt.xlabel('Year')
+        plt.ylabel(stat)
+        st.pyplot(plt)
 
 # Load the data
 nba_data = load_data()
@@ -101,7 +104,10 @@ if player1_name and player2_name:
         if player2_data.empty:
             st.write(f'Player {player2_name} not found.')
             
-# Yearly trend analysis for playoffs
-st.header("Playoffs Yearly Trend Analysis")
-selected_stat = st.selectbox('Select a stat to display trend', ['FG3M', 'FG3A'], index=0)
-plot_yearly_trend(nba_data, selected_stat, 'Playoffs')
+# Stat trends over the years for playoffs
+st.header("Player Stat Trends in Playoffs")
+selected_player = st.selectbox("Select a Player", nba_data['PLAYER'].unique())
+
+stats_to_plot = ['FG3M', 'FG3A', 'AST', 'PTS', 'STL', 'REB', 'FTM']
+if selected_player:
+    plot_stat_trends(nba_data, selected_player, stats_to_plot)
