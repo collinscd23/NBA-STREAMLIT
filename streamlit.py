@@ -12,55 +12,43 @@ def load_data():
 
 # Function to plot a heatmap
 def plot_heatmap(data, cols):
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(data[cols].corr(), annot=True, cmap='coolwarm')
-    plt.title('Statistical Correlation Heatmap')
-    st.pyplot(plt)
+    corr_matrix = data[cols].corr()
+    fig = go.Figure(data=go.Heatmap(
+        z=corr_matrix.values,
+        x=corr_matrix.columns,
+        y=corr_matrix.columns,
+        colorscale='coolwarm'))
+    fig.update_layout(title='Statistical Correlation Heatmap', 
+                      xaxis_nticks=36, yaxis_nticks=36)
+    st.plotly_chart(fig)
 
 # Function to plot a bar chart of top stats
 def plot_top_stats(data, player_name):
-    plt.figure(figsize=(10, 8))
     player_stats = data.iloc[0]
     stats = player_stats.drop(['Year', 'Season_type', 'PLAYER_ID', 'RANK', 'PLAYER', 'TEAM'])
     stats.sort_values(ascending=False, inplace=True)
-    bar_chart = stats.head(10).plot(kind='bar')
-    plt.title(f"Top 10 Stats for {player_name}")
-    plt.ylabel('Stat Value')
-    st.pyplot(plt)
+    fig = px.bar(stats.head(10), title=f"Top 10 Stats for {player_name}")
+    fig.update_layout(yaxis_title='Stat Value')
+    st.plotly_chart(fig)
 
 
 # Function to compare two players
 def compare_players(player1_data, player2_data, stats):
-    player1_stats = player1_data[stats].mean()  # Using mean in case of multiple entries
+    player1_stats = player1_data[stats].mean()
     player2_stats = player2_data[stats].mean()
-
-    for stat in stats:
-        plt.figure(figsize=(8, 6))
-        width = 0.35
-        indices = [0, 1]  # Indices for two players
-
-        plt.bar(indices[0], player1_stats[stat], width, label=player1_data['PLAYER'].iloc[0])
-        plt.bar(indices[1], player2_stats[stat], width, label=player2_data['PLAYER'].iloc[0])
-
-        plt.ylabel(stat)
-        plt.title(f'Comparison of {stat}')
-        plt.xticks(indices, [player1_data['PLAYER'].iloc[0], player2_data['PLAYER'].iloc[0]])
-        plt.legend()
-
-        st.pyplot(plt)
+    df = pd.DataFrame({'Stats': stats, player1_data['PLAYER'].iloc[0]: player1_stats, player2_data['PLAYER'].iloc[0]: player2_stats})
+    fig = px.bar(df, x='Stats', y=[player1_data['PLAYER'].iloc[0], player2_data['PLAYER'].iloc[0]], barmode='group')
+    fig.update_layout(title=f'Comparison of Players')
+    st.plotly_chart(fig)
 
 # Function to plot stat trends over the years
 def plot_stat_trends(data, player_name, stats):
     player_data = data[data['PLAYER'] == player_name]
     player_data = player_data[player_data['Season_type'].str.contains('Playoffs')]
-
     for stat in stats:
-        plt.figure(figsize=(12, 6))
-        plt.plot(player_data['Year'], player_data[stat], marker='o')
-        plt.title(f'{player_name} - {stat} Over Playoff Years')
-        plt.xlabel('Year')
-        plt.ylabel(stat)
-        st.pyplot(plt)
+        fig = px.line(player_data, x='Year', y=stat, title=f'{player_name} - {stat} Over Playoff Years')
+        fig.update_layout(xaxis_title='Year', yaxis_title=stat)
+        st.plotly_chart(fig)
 
 # Load the data
 nba_data = load_data()
