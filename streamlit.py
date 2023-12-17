@@ -24,7 +24,14 @@ def plot_heatmap(data, cols):
                       xaxis_nticks=36, yaxis_nticks=36)
     st.plotly_chart(fig)
 
-
+# Function to plot a bar chart of top stats
+def plot_top_stats(data, player_name):
+    player_stats = data.iloc[0]
+    stats = player_stats.drop(['Year', 'Season_type', 'PLAYER_ID', 'RANK', 'PLAYER', 'TEAM'])
+    stats.sort_values(ascending=False, inplace=True)
+    fig = px.bar(stats.head(10), title=f"Top 10 Stats for {player_name}")
+    fig.update_layout(yaxis_title='Stat Value')
+    st.plotly_chart(fig)
 
 
 # Function to compare two players
