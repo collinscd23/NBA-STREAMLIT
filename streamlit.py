@@ -19,7 +19,7 @@ def plot_heatmap(data, cols):
         z=corr_matrix.values,
         x=corr_matrix.columns,
         y=corr_matrix.columns,
-        colorscale='coolwarm'))
+        colorscale='Blues'))
     fig.update_layout(title='Statistical Correlation Heatmap', 
                       xaxis_nticks=36, yaxis_nticks=36)
     st.plotly_chart(fig)
